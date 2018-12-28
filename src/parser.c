@@ -12,21 +12,23 @@
 
 int parse(void);
 
-static int parse_key(void) {
+static char *parse_key(void) {
   int ret = 0;
-  token_t key_tok;
   token_t tok;
+  char *str = NULL;
+  char *_str = NULL;
 
   DEBUG_PRINT("parse_key\n");
-  token_peek(&key_tok);
+  token_peek(&tok);
   if (token_is_string() == 1) {
-    DEBUG_PRINT("parse_key string found\n");
+    _str = String(tok.value);
+    DEBUG_PRINT("parse_key string found %s\n", _str);
     token_next();
     token_peek(&tok);
     if (token_is_punc(":")) {
+      str = _str;
       DEBUG_PRINT("parse_key : found\n");
       token_next();
-      ret = 1;
     } else {
       DEBUG_PRINT("parse_key : not found\n");
       assert(0);
@@ -36,7 +38,7 @@ static int parse_key(void) {
     assert(0);
   }
 
-  return ret;
+  return str;
 }
 
 static int parse_value(void) {
@@ -68,7 +70,7 @@ int parse(void) {
   int ret = 0;
   int run = 1;
   int i = 0;
-  int key = 0;
+  char *key;
   int value = 0;
 
   DEBUG_PRINT("parse_json\n");
@@ -80,6 +82,7 @@ int parse(void) {
       DEBUG_PRINT("parse_json [%d]\n", i);
       key = parse_key();
       if (key) {
+        DEBUG_PRINT("key _%s_\n", key);
         value = parse_value();
         if (value) {
           token_peek(&tok);
@@ -111,7 +114,7 @@ int parse(void) {
   return ret;
 }
 
-void parse_init(char *ptr) {
+void parse_init(const char *ptr) {
   DEBUG_PRINT("parse_init\n");
   /* init token */
   token_init(ptr);

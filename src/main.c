@@ -19,7 +19,7 @@ static const char *JSON_STRING =
     "{\"user\":\"johndoe\",\"admin\":false,\"uid\":1000,"
     "\"groups\":[\"users\",\"wheel\",\"audio\",\"video\"]}";
 #else
-static char *JSON_STRING = "{\"a\":0,\"b\":\"ale\"}";
+static const char *JSON_STRING = "{\"a\":0,\"b\":\"ale\"}";
 #endif
 
 int main(void) {

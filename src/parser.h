@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-extern void parse_init(char *ptr);
+extern void parse_init(const char *ptr);
 extern int parse(void);
 
 #ifdef __cplusplus

@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-extern void input_init(char *ptr);
+extern void input_init(const char *ptr);
 extern char input_charAt(int pos);
 extern char input_next();
 extern char input_peek(void);

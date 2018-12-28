@@ -11,12 +11,12 @@
 #define debug_printf(fmt, args...) /* Don't do anything in release builds */
 #endif
 
-char *input_input = NULL;
+const char *input_input = NULL;
 int input_pos = 0;
 int input_line = 1;
 int input_col = 0;
 
-void input_init(char *ptr) { input_input = ptr; }
+void input_init(const char *ptr) { input_input = ptr; }
 
 char input_charAt(int pos) {
   debug_printf("input->charAt %d\n", pos);

@@ -5,6 +5,8 @@
 #include "input.h"
 #include "token.h"
 #include "util.h"
+
+#define DEBUG_ENABLE
 #include "debug.h"
 
 const char digit[] = "0123456789";
@@ -138,7 +140,7 @@ static void read_next(void) {
   }
 }
 
-void token_init(char *ptr) { input_init(ptr); };
+void token_init(const char *ptr) { input_init(ptr); };
 
 void token_peek(token_t *token) {
   DEBUG_PRINT("token_peek\n");
