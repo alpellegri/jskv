@@ -15,18 +15,18 @@ int parse(void);
 static char *parse_key(void) {
   int ret = 0;
   token_t tok;
-  char *str = NULL;
-  char *_str = NULL;
+  char *key = NULL;
+  char *str;
 
   DEBUG_PRINT("parse_key\n");
   token_peek(&tok);
   if (token_is_string() == 1) {
-    _str = String(tok.value);
-    DEBUG_PRINT("parse_key string found %s\n", _str);
+    str = String(tok.value);
+    DEBUG_PRINT("parse_key string found %s\n", str);
     token_next();
     token_peek(&tok);
     if (token_is_punc(":")) {
-      str = _str;
+      key = str;
       DEBUG_PRINT("parse_key : found\n");
       token_next();
     } else {
@@ -38,10 +38,10 @@ static char *parse_key(void) {
     assert(0);
   }
 
-  return str;
+  return key;
 }
 
-static int parse_value(void) {
+static int parse_value(char *key) {
   int ret = 0;
   token_t tok;
 
@@ -83,7 +83,7 @@ int parse(void) {
       key = parse_key();
       if (key) {
         DEBUG_PRINT("key _%s_\n", key);
-        value = parse_value();
+        value = parse_value(key);
         if (value) {
           token_peek(&tok);
           if (token_is_punc("}") == 1) {

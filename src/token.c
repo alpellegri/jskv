@@ -6,7 +6,7 @@
 #include "token.h"
 #include "util.h"
 
-#define DEBUG_ENABLE
+// #define DEBUG_ENABLE
 #include "debug.h"
 
 const char digit[] = "0123456789";
