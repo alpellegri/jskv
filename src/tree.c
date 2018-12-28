@@ -4,9 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "debug.h"
 #include "tree.h"
 #include "util.h"
+
+#define DEBUG_ENABLE
+#include "debug.h"
 
 /*
   Left-child right-sibling binary tree, where

@@ -1,11 +1,13 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "debug.h"
+#include "parser.h"
+#include "token.h"
 #include "tree.h"
 #include "util.h"
-#include "token.h"
-#include "parser.h"
+
+#define DEBUG_ENABLE
+#include "debug.h"
 
 /*
  * A small example of jsmn parsing when JSON structure is known and number of
@@ -25,7 +27,7 @@ int main(void) {
   parse_init(JSON_STRING);
   parse();
 
-#if 1
+#if 0
   jsnode json = NULL;
   jsnode json2 = NULL;
 

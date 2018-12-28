@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 
-#define DEBUG_ENABLE
 #ifdef DEBUG_ENABLE
 #define DEBUG_PRINT(fmt, ...) do { \
   printf(fmt, ##__VA_ARGS__); \

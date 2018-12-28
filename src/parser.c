@@ -7,12 +7,8 @@
 #include "token.h"
 #include "util.h"
 
-#define DEBUG
-#ifdef DEBUG
-#define debug_printf(fmt, args...) printf(fmt, ##args)
-#else
-#define debug_printf(fmt, args...) /* Don't do anything in release builds */
-#endif
+#define DEBUG_ENABLE
+#include "debug.h"
 
 int parse(void);
 
@@ -21,20 +17,22 @@ static int parse_key(void) {
   token_t key_tok;
   token_t tok;
 
-  debug_printf("parse_key\n");
+  DEBUG_PRINT("parse_key\n");
   token_peek(&key_tok);
   if (token_is_string() == 1) {
-    debug_printf("parse_key string found\n");
+    DEBUG_PRINT("parse_key string found\n");
     token_next();
     token_peek(&tok);
     if (token_is_punc(":")) {
-      debug_printf("parse_key : found\n");
+      DEBUG_PRINT("parse_key : found\n");
       token_next();
       ret = 1;
     } else {
+      DEBUG_PRINT("parse_key : not found\n");
       assert(0);
     }
   } else {
+    DEBUG_PRINT("parse_key string not found\n");
     assert(0);
   }
 
@@ -45,17 +43,17 @@ static int parse_value(void) {
   int ret = 0;
   token_t tok;
 
-  debug_printf("parse_value\n");
+  DEBUG_PRINT("parse_value\n");
   token_peek(&tok);
   if (token_is_punc("{") == 1) {
-    debug_printf("parse_value json\n");
+    DEBUG_PRINT("parse_value json\n");
     ret = parse();
   } else if (token_is_num() == 1) {
-    debug_printf("parse_value number\n");
+    DEBUG_PRINT("parse_value number\n");
     token_next();
     ret = 1;
   } else if (token_is_string() == 1) {
-    debug_printf("parse_value string\n");
+    DEBUG_PRINT("parse_value string\n");
     token_next();
     ret = 1;
   } else {
@@ -73,25 +71,25 @@ int parse(void) {
   int key = 0;
   int value = 0;
 
-  debug_printf("parse_json\n");
+  DEBUG_PRINT("parse_json\n");
   token_peek(&tok);
   if (token_is_punc("{") == 1) {
-    debug_printf("parse_json { found\n");
+    DEBUG_PRINT("parse_json { found\n");
     token_next();
     do {
-      debug_printf("parse_json [%d]\n", i);
+      DEBUG_PRINT("parse_json [%d]\n", i);
       key = parse_key();
       if (key) {
         value = parse_value();
         if (value) {
           token_peek(&tok);
           if (token_is_punc("}") == 1) {
-            debug_printf("parse_json } found\n");
+            DEBUG_PRINT("parse_json } end found\n");
             token_next();
             ret = 1;
             run = 0;
           } else if (token_is_punc(",") == 1) {
-            debug_printf("parse_json , found\n");
+            DEBUG_PRINT("parse_json , next found\n");
             token_next();
             run = 1;
           } else {
@@ -106,6 +104,7 @@ int parse(void) {
       i++;
     } while (run == 1);
   } else {
+    DEBUG_PRINT("parse_json { not found\n");
     assert(0);
   }
 
@@ -113,7 +112,7 @@ int parse(void) {
 }
 
 void parse_init(char *ptr) {
-  debug_printf("parse_init\n");
+  DEBUG_PRINT("parse_init\n");
   /* init token */
   token_init(ptr);
 };
