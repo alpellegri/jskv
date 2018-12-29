@@ -124,6 +124,7 @@ int main(void) {
   node = setjs(jsint, node, "d/m", "10");
   node = setjs(jsint, node, "d/l", "20");
   node = setjs(jsint, node, "d/m", "30");
+  node = setjs(jsint, node, "e", "end");
   jsscan(node);
   rmjs_object(node);
 #endif

@@ -139,7 +139,7 @@ string pathfind(jsnode root, string *path, jsnode *parent, jsnode *prev,
       checked_free(key);
     }
     /* get current path-key */
-    DEBUG_PRINT("---------------------- get path-key %s\n", *path);
+    // DEBUG_PRINT("---------------------- get path-key %s\n", *path);
     p = strstr(*path, "/");
     if (p != NULL) {
       char len = p - *path;
@@ -181,12 +181,12 @@ jsnode setjs(jsnode_type type, jsnode root, string path, string v) {
   jsnode prev;
   jsnode parent;
 
-  DEBUG_PRINT("> setjs %d\n", level);
+  // DEBUG_PRINT("> setjs %d\n", level);
   key = pathfind(root, &path, &parent, &prev, &node);
 
   /*  */
   if (node != NULL) {
-    DEBUG_PRINT("setjs-root not empty %s\n", node->key);
+    // DEBUG_PRINT("setjs-root not empty %s\n", node->key);
     jsnode _node = mkjs_native(type, key, v);
     _node->next = node->next;
     if (prev == NULL) {
@@ -236,7 +236,7 @@ jsnode setjs_object(jsnode root, string path, jsnode v) {
   jsnode prev;
   jsnode parent;
 
-  DEBUG_PRINT("> setjs_object %d\n", level);
+  // DEBUG_PRINT("> setjs_object %d\n", level);
   key = pathfind(root, &path, &parent, &prev, &node);
 
   /*  */
@@ -327,6 +327,7 @@ void jsscan(jsnode node) {
   level++;
   char str[25];
   int i;
+
   if (node != NULL) {
     for (i = 0; i < 2 * level; i++) {
       str[i] = ' ';
@@ -334,20 +335,25 @@ void jsscan(jsnode node) {
     str[i] = '\0';
     if (node->value) {
       assert(node->child == NULL);
-      DEBUG_PRINT("%s %s %s\n", str, node->key, node->value);
+      DEBUG_PRINT("%d%s\"%s\": %s", level, str, node->key, node->value);
       level--;
       if (node->next) {
+        DEBUG_PRINT(",\n");
         jsscan(node->next);
       }
     } else {
       // assert(n->child != NULL);
-      DEBUG_PRINT("%s %s\n", str, node->key);
       if (node->child) {
+        DEBUG_PRINT("%d%s\"%s\": {\n", level, str, node->key);
         jsscan(node->child);
+        DEBUG_PRINT("\n%d%s}", level, str);
       }
       level--;
       if (node->next) {
+        DEBUG_PRINT(",\n");
         jsscan(node->next);
+      } else {
+        DEBUG_PRINT("\n");
       }
     }
   }
