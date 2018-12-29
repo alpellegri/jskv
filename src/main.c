@@ -38,7 +38,7 @@ int main(void) {
   rmjs_object(root);
 #endif
 
-#if 0
+#if 1
   jsnode json = NULL;
   jsnode json2 = NULL;
 
@@ -103,7 +103,7 @@ int main(void) {
   rmjs_object(json);
 #endif
 
-#if 1
+#if 0
   static const char *JSON_STRING = //
       "{"                          //
       "\"a\":0,"                   //
@@ -121,7 +121,10 @@ int main(void) {
   parse_init(JSON_STRING);
   jsnode node = parse();
   jsscan(node);
-  DEBUG_PRINT("\n");
+  node = setjs(jsint, node, "d/m", "10");
+  node = setjs(jsint, node, "d/l", "20");
+  node = setjs(jsint, node, "d/m", "30");
+  jsscan(node);
   rmjs_object(node);
 #endif
 
