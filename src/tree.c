@@ -10,10 +10,9 @@
 #define DEBUG_ENABLE
 #include "debug.h"
 
-/*
-  Left-child right-sibling binary tree, where
-    not leaf node child contains a path
-    leaf node child is null
+/* Left-child right-sibling binary tree, where
+   not leaf node child contains a path
+   leaf node child is null
 
           1
          /
@@ -122,8 +121,7 @@ jsnode rmjs_object(jsnode root) {
     }
     checked_free(root);
   } else {
-    DEBUG_PRINT("rmjs_object empty %x\n", root);
-    assert(0);
+    DEBUG_PRINT("rmjs_object empty\n", root);
   }
 
   level--;
@@ -242,11 +240,11 @@ jsnode setjs_object(jsnode root, string path, jsnode v) {
   key = pathfind(root, &path, &parent, &prev, &node);
 
   /*  */
-  jsnode copy = cpjs(v);
   if (node != NULL) {
     // DEBUG_PRINT("setjs_object-root not empty %s\n", node->key);
     jsnode next = node->next;
     rmjs_object(node);
+    jsnode copy = cpjs(v);
     node = mkjs_object(key, copy);
     if (prev == NULL) {
       parent->child = node;
@@ -270,6 +268,7 @@ jsnode setjs_object(jsnode root, string path, jsnode v) {
       }
     } else {
       // DEBUG_PRINT("setjs_object-root is a leaf %s\n", key);
+      jsnode copy = cpjs(v);
       /* this is a leaf */
       if (prev == NULL) {
         root = copy;

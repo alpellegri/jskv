@@ -5,12 +5,13 @@
 
 #include "parser.h"
 #include "token.h"
+#include "tree.h"
 #include "util.h"
 
 #define DEBUG_ENABLE
 #include "debug.h"
 
-int parse(void);
+jsnode parse(void);
 
 static char *parse_key(void) {
   int ret = 0;
@@ -41,37 +42,43 @@ static char *parse_key(void) {
   return key;
 }
 
-static int parse_value(char *key) {
-  int ret = 0;
+jsnode parse_value(char *key) {
+  jsnode node = NULL;
   token_t tok;
+  char *str;
 
   DEBUG_PRINT("parse_value\n");
   token_peek(&tok);
   if (token_is_punc("{") == 1) {
     DEBUG_PRINT("parse_value json\n");
-    ret = parse();
+    jsnode _node = parse();
+    node = mkjs_object(key, _node);
   } else if (token_is_num() == 1) {
     DEBUG_PRINT("parse_value number\n");
+    str = String(tok.value);
+    node = mkjs_native(jsint, key, str);
     token_next();
-    ret = 1;
   } else if (token_is_string() == 1) {
     DEBUG_PRINT("parse_value string\n");
+    str = String(tok.value);
+    node = mkjs_native(jsstring, key, str);
     token_next();
-    ret = 1;
   } else {
     assert(0);
   }
 
-  return ret;
+  return node;
 }
 
-int parse(void) {
+jsnode parse(void) {
   token_t tok;
-  int ret = 0;
+  jsnode node = NULL;
   int run = 1;
   int i = 0;
   char *key;
-  int value = 0;
+
+  jsnode root = NULL;
+  jsnode cursor;
 
   DEBUG_PRINT("parse_json\n");
   token_peek(&tok);
@@ -81,20 +88,25 @@ int parse(void) {
     do {
       DEBUG_PRINT("parse_json [%d]\n", i);
       key = parse_key();
-      if (key) {
+      if (key != NULL) {
         DEBUG_PRINT("key _%s_\n", key);
-        value = parse_value(key);
-        if (value) {
+        node = parse_value(key);
+        if (node != NULL) {
+          if (root == NULL) {
+            root = node;
+            cursor = root;
+          } else {
+            cursor->next = node;
+            cursor = cursor->next;
+          }
           token_peek(&tok);
           if (token_is_punc("}") == 1) {
             DEBUG_PRINT("parse_json } end found\n");
             token_next();
-            ret = 1;
             run = 0;
           } else if (token_is_punc(",") == 1) {
             DEBUG_PRINT("parse_json , next found\n");
             token_next();
-            run = 1;
           } else {
             assert(0);
           }
@@ -111,7 +123,7 @@ int parse(void) {
     assert(0);
   }
 
-  return ret;
+  return root;
 }
 
 void parse_init(const char *ptr) {

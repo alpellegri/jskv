@@ -9,23 +9,34 @@
 #define DEBUG_ENABLE
 #include "debug.h"
 
-/*
- * A small example of jsmn parsing when JSON structure is known and number of
- * tokens is predictable.
- */
-
-#if 0
-static const char *JSON_STRING =
-    "{\"user\":\"johndoe\",\"admin\":false,\"uid\":1000,"
-    "\"groups\":[\"users\",\"wheel\",\"audio\",\"video\"]}";
-#else
-static const char *JSON_STRING = "{\"a\":0,\"b\":\"ale\"}";
-#endif
-
 int main(void) {
   DEBUG_PRINT("main\n");
-  parse_init(JSON_STRING);
-  parse();
+
+#if 0
+  jsnode root = mkjs_native(jsint, "a", "0");
+  jsnode cursor = root;
+  //cursor = cursor->child;
+  jsnode node = mkjs_native(jsint, "b", "1");
+  cursor->next = node;
+
+  jsscan(root);
+  DEBUG_PRINT("\n");
+  rmjs_object(root);
+#endif
+
+#if 0
+  jsnode root = mkjs_object("root", NULL);
+  jsnode cursor = root;
+  jsnode node = mkjs_native(jsint, "a", "0");
+  cursor->child = node;
+  cursor = cursor->child;
+  node = mkjs_native(jsint, "b", "1");
+  cursor->next = node;
+
+  jsscan(root);
+  DEBUG_PRINT("\n");
+  rmjs_object(root);
+#endif
 
 #if 0
   jsnode json = NULL;
@@ -90,6 +101,28 @@ int main(void) {
   DEBUG_PRINT("\n");
 
   rmjs_object(json);
+#endif
+
+#if 1
+  static const char *JSON_STRING = //
+      "{"                          //
+      "\"a\":0,"                   //
+      "\"b\":\"1\","               //
+      "\"c\":\"2\","               //
+      "\"d\":"                     //
+      "{"                          //
+      "\"e\":0,"                   //
+      "\"f\":\"1\","               //
+      "\"g\":\"2\","               //
+      "\"h\":\"3\""                //
+      "}"                          //
+      "}";                         //
+
+  parse_init(JSON_STRING);
+  jsnode node = parse();
+  jsscan(node);
+  DEBUG_PRINT("\n");
+  rmjs_object(node);
 #endif
 
   return 0;

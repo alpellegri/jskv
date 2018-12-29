@@ -9,6 +9,7 @@
 // #define DEBUG_ENABLE
 #include "debug.h"
 
+const char keywords[] = " true false ";
 const char digit[] = "0123456789";
 const char id_start[] = "abcdefghikjlmnopqrstuvzwxy_";
 const char id[] = "?!-<>=0123456789";
@@ -16,6 +17,13 @@ const char punc[] = ",:{}[]";
 const char whitespace[] = " \t\n";
 
 token_t current;
+
+static int is_keyword(char *str) {
+  int ret;
+  ret = (strstr(keywords, str) != NULL);
+  DEBUG_PRINT("token->is_keyword %d\n", ret);
+  return ret;
+};
 
 static int is_digit(char ch) {
   int ret;

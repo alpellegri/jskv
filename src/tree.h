@@ -14,7 +14,7 @@ struct jsnode_s {
   jsnode_type type;
   string key;
   string value;
-  void *child;
+  jsnode child;
   jsnode next;
 };
 
