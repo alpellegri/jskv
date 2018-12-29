@@ -321,32 +321,32 @@ jsnode rmjs(jsnode root, string path) {
   return root;
 }
 
-void jsscan(jsnode n) {
+void jsscan(jsnode node) {
   static uint8_t level;
   level++;
   char str[25];
   int i;
-  if (n != NULL) {
+  if (node != NULL) {
     for (i = 0; i < 2 * level; i++) {
       str[i] = ' ';
     }
     str[i] = '\0';
-    if (n->value) {
-      assert(n->child == NULL);
-      DEBUG_PRINT("%s %s %s\n", str, n->key, n->value);
+    if (node->value) {
+      assert(node->child == NULL);
+      DEBUG_PRINT("%s %s %s\n", str, node->key, node->value);
       level--;
-      if (n->next) {
-        jsscan(n->next);
+      if (node->next) {
+        jsscan(node->next);
       }
     } else {
       // assert(n->child != NULL);
-      DEBUG_PRINT("%s %s\n", str, n->key);
-      if (n->child) {
-        jsscan(n->child);
+      DEBUG_PRINT("%s %s\n", str, node->key);
+      if (node->child) {
+        jsscan(node->child);
       }
       level--;
-      if (n->next) {
-        jsscan(n->next);
+      if (node->next) {
+        jsscan(node->next);
       }
     }
   }

@@ -23,7 +23,7 @@ extern jsnode mkjs_object(string k, jsnode v);
 extern jsnode cpjs(jsnode v);
 extern jsnode rmjs_object(jsnode n);
 extern void rmjs_object_tree(jsnode n);
-extern void jsscan(jsnode n);
+extern void jsscan(jsnode node);
 
 extern jsnode setjs(jsnode_type type, jsnode root, string path, string v);
 extern jsnode setjs_object(jsnode root, string path, jsnode v);
