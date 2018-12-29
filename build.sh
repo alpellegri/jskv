@@ -1,5 +1,5 @@
 echo build
-gcc -O0 -g -Isrc -Ilib/jsmn\
+gcc -O0 -g -Isrc \
   src/util.c \
   src/input.c \
   src/token.c \

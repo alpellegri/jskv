@@ -187,14 +187,14 @@ jsnode setjs(jsnode_type type, jsnode root, string path, string v) {
   /*  */
   if (node != NULL) {
     DEBUG_PRINT("setjs-root not empty %s\n", node->key);
-    jsnode next = node->next;
-    rmjs_object(node);
-    node = mkjs_native(type, key, v);
+    jsnode _node = mkjs_native(type, key, v);
+    _node->next = node->next;
     if (prev == NULL) {
-      parent->child = node;
+      parent->child = _node;
     } else {
-      prev->next = node;
+      prev->next = _node;
     }
+    rmjs_object(node);
   } else {
     // create an objs cascade
     /* empty */
@@ -243,14 +243,15 @@ jsnode setjs_object(jsnode root, string path, jsnode v) {
   if (node != NULL) {
     // DEBUG_PRINT("setjs_object-root not empty %s\n", node->key);
     jsnode next = node->next;
-    rmjs_object(node);
     jsnode copy = cpjs(v);
-    node = mkjs_object(key, copy);
+    jsnode _node = mkjs_object(key, copy);
+    _node->next = node->next;
     if (prev == NULL) {
-      parent->child = node;
+      parent->child = _node;
     } else {
-      prev->next = node;
+      prev->next = _node;
     }
+    rmjs_object(node);
   } else {
     // create an objs cascade
     /* empty */

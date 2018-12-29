@@ -38,7 +38,7 @@ int main(void) {
   rmjs_object(root);
 #endif
 
-#if 1
+#if 0
   jsnode json = NULL;
   jsnode json2 = NULL;
 
@@ -103,7 +103,7 @@ int main(void) {
   rmjs_object(json);
 #endif
 
-#if 0
+#if 1
   static const char *JSON_STRING = //
       "{"                          //
       "\"a\":0,"                   //
