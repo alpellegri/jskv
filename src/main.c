@@ -106,7 +106,7 @@ int main(void) {
 #if 1
   static const char *JSON_STRING = //
       "{"                          //
-      "\"a\":0,"                   //
+      "\"a\":true,"                //
       "\"b\":\"1\","               //
       "\"c\":\"2\","               //
       "\"d\":"                     //

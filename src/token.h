@@ -9,6 +9,8 @@ typedef enum {
   token_punc = 1,
   token_num,
   token_str,
+  token_kw,
+  token_var,
 } token_type_t;
 
 typedef char token_value_t[50];
@@ -25,9 +27,11 @@ extern void token_next();
 extern int token_is_eof(void);
 extern void token_croak(char *str);
 extern int token_is_punc(char *ch);
+extern int token_is_kw(char *kw);
 extern int token_is_num(void);
 extern int token_is_string(void);
 extern void token_skip_punc(char *ch);
+extern void token_skip_kw(char *kw);
 
 #ifdef __cplusplus
 }

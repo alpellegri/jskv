@@ -63,6 +63,11 @@ jsnode parse_value(char *key) {
     str = String(tok.value);
     node = mkjs_native(jsstring, key, str);
     token_next();
+  } else if ((token_is_kw("true") == 1) || (token_is_kw("false") == 1)) {
+    DEBUG_PRINT("parse_value string\n");
+    str = String(tok.value);
+    node = mkjs_native(jsbool, key, str);
+    token_next();
   } else {
     assert(0);
   }

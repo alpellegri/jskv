@@ -107,6 +107,13 @@ static void read_number(void) {
   DEBUG_PRINT("read_number is: _%s_\n", current.value);
 }
 
+static void read_ident(void) {
+  read_while(current.value, is_id_start);
+  // return { type: is_keyword(id) ? "kw" : "var", value: id };
+  current.type = is_keyword(current.value) ? (token_kw) : (token_var);
+  DEBUG_PRINT("read_ident is: _%s_\n", current.value);
+}
+
 static void read_punc(void) {
   read_once(current.value, is_punc);
   // return { type: is_keyword(id) ? "kw" : "var", value: id };
@@ -136,6 +143,9 @@ static void read_next(void) {
       return;
     } else if (is_digit(ch)) {
       read_number();
+      return;
+    } else if (is_id_start(ch)) {
+      read_ident();
       return;
     } else if (is_punc(ch)) {
       // return { type: "punc", value: input.next() };
@@ -200,6 +210,25 @@ int token_is_string(void) {
     ret = 1;
   }
   return ret;
+}
+
+int token_is_kw(char *kw) {
+  token_t tok;
+  int ret = 0;
+  token_peek(&tok);
+  if ((tok.type == token_kw) && (strcmp(kw, tok.value) == 0)) {
+    ret = 1;
+  }
+  return ret;
+}
+
+void token_skip_kw(char *kw) {
+  if (token_is_kw(kw)) {
+    token_next();
+  } else {
+    // input.croak("Expecting keyword: \"" + kw + "\"");
+    token_croak("Expecting keyword:");
+  }
 }
 
 void token_skip_punc(char *ch) {
