@@ -45,7 +45,6 @@ static char *parse_key(void) {
 jsnode parse_value(char *key) {
   jsnode node = NULL;
   token_t tok;
-  char *str;
 
   DEBUG_PRINT("parse_value\n");
   token_peek(&tok);
@@ -55,18 +54,15 @@ jsnode parse_value(char *key) {
     node = mkjs_object(key, _node);
   } else if (token_is_num() == 1) {
     DEBUG_PRINT("parse_value number\n");
-    str = String(tok.value);
-    node = mkjs_native(jsint, key, str);
+    node = mkjs_native(jsint, key, tok.value);
     token_next();
   } else if (token_is_string() == 1) {
     DEBUG_PRINT("parse_value string\n");
-    str = String(tok.value);
-    node = mkjs_native(jsstring, key, str);
+    node = mkjs_native(jsstring, key, tok.value);
     token_next();
   } else if ((token_is_kw("true") == 1) || (token_is_kw("false") == 1)) {
     DEBUG_PRINT("parse_value string\n");
-    str = String(tok.value);
-    node = mkjs_native(jsbool, key, str);
+    node = mkjs_native(jsbool, key, tok.value);
     token_next();
   } else {
     assert(0);
@@ -96,6 +92,8 @@ jsnode parse(void) {
       if (key != NULL) {
         DEBUG_PRINT("key _%s_\n", key);
         node = parse_value(key);
+        // free the key
+        checked_free(key);
         if (node != NULL) {
           if (root == NULL) {
             root = node;

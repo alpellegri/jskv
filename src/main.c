@@ -24,7 +24,7 @@ int main(void) {
 
   jsscan(root);
   DEBUG_PRINT("\n");
-  rmjs_object_tree(root);
+  root = rmjs_object_tree(root);
 #endif
 
 #if 0
@@ -38,7 +38,7 @@ int main(void) {
 
   jsscan(root);
   DEBUG_PRINT("\n");
-  rmjs_object_tree(root);
+  root = rmjs_object_tree(root);
 #endif
 
 #if 0
@@ -103,8 +103,8 @@ int main(void) {
   jsscan(json);
   DEBUG_PRINT("\n");
 
-  rmjs_object_tree(json);
-  rmjs_object_tree(json2);
+  json = rmjs_object_tree(json);
+  json2 = rmjs_object_tree(json2);
 #endif
 
 #if 1
@@ -134,7 +134,7 @@ int main(void) {
 #endif
   jsscan(root);
   DEBUG_PRINT("\n");
-  rmjs_object_tree(root);
+  root = rmjs_object_tree(root);
 #endif
 
   display_nodes();
