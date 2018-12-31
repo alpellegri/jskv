@@ -97,6 +97,41 @@ jsnode cpjs(jsnode v) {
   return root;
 }
 
+void rmjs_object_tree(jsnode root) {
+  static uint8_t level;
+  level++;
+  jsnode ret;
+
+  // DEBUG_PRINT("> rmjs_object %d\n", level);
+  if (root != NULL) {
+    // DEBUG_PRINT("rmjs_object %s\n", root->key);
+    if (root->value != NULL) {
+      assert(root->child == NULL);
+      assert((root->type == jsbool) || (root->type == jsint) ||
+             (root->type == jsfloat) || (root->type == jsstring));
+      if (root->next != NULL) {
+        rmjs_object_tree(root->next);
+      }
+      checked_free(root->value);
+      checked_free(root->key);
+    } else {
+      assert((root->type == jsarray) || (root->type == jsobject));
+      if (root->next != NULL) {
+        rmjs_object_tree(root->next);
+      }
+      if (root->child != NULL) {
+        rmjs_object_tree(root->child);
+      }
+      checked_free(root->key);
+    }
+    checked_free(root);
+  } else {
+    DEBUG_PRINT("rmjs_object empty\n", root);
+  }
+
+  level--;
+}
+
 jsnode rmjs_object(jsnode root) {
   static uint8_t level;
   level++;
@@ -106,7 +141,7 @@ jsnode rmjs_object(jsnode root) {
   if (root != NULL) {
     // DEBUG_PRINT("rmjs_object %s\n", root->key);
     ret = root->next;
-    if (root->value) {
+    if (root->value != NULL) {
       assert(root->child == NULL);
       assert((root->type == jsbool) || (root->type == jsint) ||
              (root->type == jsfloat) || (root->type == jsstring));
@@ -115,7 +150,7 @@ jsnode rmjs_object(jsnode root) {
     } else {
       assert((root->type == jsarray) || (root->type == jsobject));
       if (root->child != NULL) {
-        rmjs_object(root->child);
+        rmjs_object_tree(root->child);
       }
       checked_free(root->key);
     }
@@ -352,8 +387,6 @@ void jsscan(jsnode node) {
       if (node->next) {
         DEBUG_PRINT(",\n");
         jsscan(node->next);
-      } else {
-        DEBUG_PRINT("\n");
       }
     }
   }

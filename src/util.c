@@ -1,24 +1,13 @@
-/*
- * Commonly used utility functions.
- */
-
+#include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "util.h"
 
-// #define DEBUG
-#ifdef DEBUG
-#define debug_printf(fmt, args...)                                             \
-  do {                                                                         \
-    printf(fmt, ##args);                                                       \
-    fflush(stdout);                                                            \
-  } while (0)
-#else
-#define debug_printf(fmt, args...) /* Don't do anything in release builds */
-#endif
+#define DEBUG_ENABLE
+#include "debug.h"
+#define DEBUG
 
 typedef struct node_s *node_p;
 struct node_s {
@@ -35,14 +24,14 @@ void display_nodes() {
   node_p ptr = node_head;
   unsigned int mem = 0;
 
-  // printf("display_nodes:\n");
+  printf("display_nodes:\n");
   // start from the beginning
   while (ptr != NULL) {
     mem += ptr->data;
-    // printf("(%x,%d)\n", ptr->key, ptr->data);
+    printf("%x: %d\n", ptr->key, ptr->data);
     ptr = ptr->next;
   }
-  debug_printf("display_nodes memory: %d\n", mem);
+  printf("display_nodes memory: %d\n", mem);
 }
 
 // insert link at the first location
@@ -96,28 +85,25 @@ node_p rm_node(unsigned int key) {
 
 /* helper function */
 char *_strdup(const char *s) {
-  debug_printf("_strdup\n");
+  DEBUG_PRINT("_strdup\n");
   char *d = checked_malloc(strlen(s) + 1); // Space for length plus nul
   if (d == NULL) {
+    assert(0);
     return NULL; // No memory
   }
   strcpy(d, s); // Copy the characters
   return d;     // Return the new string
 }
 
-/* helper function */
-void _exit(int v) { exit(v); }
-
 void *checked_malloc(unsigned int len) {
   void *p = calloc(len, 1);
   if (!p) {
     printf("Ran out of memory!\n");
-    _exit(1);
+    assert(0);
   } else {
 #ifdef DEBUG
-    debug_printf("checked_malloc %x, %d\n", (unsigned int)p, len);
+    DEBUG_PRINT("checked_malloc %x, %d\n", (unsigned int)p, len);
     mk_node((unsigned int)p, len);
-    display_nodes();
 #endif
   }
   return p;
@@ -126,18 +112,18 @@ void *checked_malloc(unsigned int len) {
 void checked_free(void *p) {
   if (p == 0) {
     printf("checked_free error\n");
-    _exit(1);
+    assert(0);
   } else {
 #ifdef DEBUG
     node_p node;
     node = rm_node((unsigned int)p);
-    debug_printf("checked_free %x,%d\n", (unsigned int)p, node->data);
+    DEBUG_PRINT("checked_free %x,%d\n", (unsigned int)p, node->data);
     if (node != 0) {
       free(node);
     } else {
-      debug_printf("checked_free: node not found!\n");
+      DEBUG_PRINT("checked_free: node not found!\n");
+      assert(0);
     }
-    display_nodes();
 #endif
     free(p);
   }
