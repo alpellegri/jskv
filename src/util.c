@@ -7,7 +7,7 @@
 
 #define DEBUG_ENABLE
 #include "debug.h"
-#define DEBUG
+// #define DEBUG
 
 typedef struct node_s *node_p;
 struct node_s {

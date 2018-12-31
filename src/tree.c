@@ -110,7 +110,7 @@ jsnode rmjs_object_tree(jsnode root) {
         rmjs_object_tree(root->next);
         root->next = NULL;
       }
-      DEBUG_PRINT("rmjs_object_tree %s\n", root->key);
+      // DEBUG_PRINT("rmjs_object_tree %s\n", root->key);
       checked_free(root->value);
       checked_free(root->key);
     } else {
@@ -123,7 +123,7 @@ jsnode rmjs_object_tree(jsnode root) {
         rmjs_object_tree(root->child);
         root->child = NULL;
       }
-      DEBUG_PRINT("rmjs_object_tree %s\n", root->key);
+      // DEBUG_PRINT("rmjs_object_tree %s\n", root->key);
       checked_free(root->key);
     }
     checked_free(root);
