@@ -4,12 +4,11 @@
 #include <stdio.h>
 
 #ifdef DEBUG_ENABLE
-#define DEBUG_PRINT(fmt, ...) do { \
-  printf(fmt, ##__VA_ARGS__); \
-  fflush(stdout); \
+#define DEBUG_PRINT(fmt, args...) do { \
+  printf(fmt, ##args); \
 } while(0)
 #else
-#define DEBUG_PRINT(fmt, ...)
+#define DEBUG_PRINT(fmt, args...)
 #endif
 
 #endif

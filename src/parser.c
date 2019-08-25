@@ -14,7 +14,6 @@
 jsnode parse(void);
 
 static char *parse_key(void) {
-  int ret = 0;
   token_t tok;
   char *key = NULL;
   char *str;

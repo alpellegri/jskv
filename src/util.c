@@ -5,9 +5,9 @@
 #include <string.h>
 #include "util.h"
 
-#define DEBUG_ENABLE
+// #define DEBUG_ENABLE
 #include "debug.h"
-// #define DEBUG
+#define DEBUG
 
 typedef struct node_s *node_p;
 struct node_s {
@@ -17,7 +17,6 @@ struct node_s {
 } node_t;
 
 static node_p node_head = NULL;
-static node_p node_curr = NULL;
 
 // display the list
 void display_nodes() {

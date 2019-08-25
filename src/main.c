@@ -12,10 +12,14 @@
 int main(void) {
   DEBUG_PRINT("main\n");
 
-#if 0
-  jsnode root = mkjs_native(jsint, "a", "0");
-  jsnode cursor = root;
-  jsnode node = mkjs_native(jsint, "b", "1");
+  jsnode root;
+  jsnode cursor;
+  jsnode node;
+
+#if 1
+  root = mkjs_native(jsint, "a", "0");
+  cursor = root;
+  node = mkjs_native(jsint, "b", "1");
   cursor->next = node;
   cursor = cursor->next;
   node = mkjs_native(jsint, "c", "2");
@@ -24,13 +28,13 @@ int main(void) {
 
   jsscan(root);
   DEBUG_PRINT("\n");
-  root = rmjs_object_tree(root);
+  rmjs_object_tree(root);
 #endif
 
-#if 0
-  jsnode root = mkjs_object("root", NULL);
-  jsnode cursor = root;
-  jsnode node = mkjs_native(jsint, "a", "0");
+#if 1
+  root = mkjs_object("root", NULL);
+  cursor = root;
+  node = mkjs_native(jsint, "a", "0");
   cursor->child = node;
   cursor = cursor->child;
   node = mkjs_native(jsint, "b", "1");
@@ -38,10 +42,10 @@ int main(void) {
 
   jsscan(root);
   DEBUG_PRINT("\n");
-  root = rmjs_object_tree(root);
+  rmjs_object_tree(root);
 #endif
 
-#if 0
+#if 1
   jsnode json = NULL;
   jsnode json2 = NULL;
 
@@ -103,8 +107,8 @@ int main(void) {
   jsscan(json);
   DEBUG_PRINT("\n");
 
-  json = rmjs_object_tree(json);
-  json2 = rmjs_object_tree(json2);
+  rmjs_object_tree(json);
+  rmjs_object_tree(json2);
 #endif
 
 #if 1
@@ -123,9 +127,7 @@ int main(void) {
       "}";                         //
 
   parse_init(JSON_STRING);
-  jsnode root = parse();
-  jsscan(root);
-  DEBUG_PRINT("\n");
+  root = parse();
 #if 0
   root = setjs(jsint, root, "d/m", "10");
   root = setjs(jsint, root, "d/l", "20");
@@ -134,7 +136,7 @@ int main(void) {
 #endif
   jsscan(root);
   DEBUG_PRINT("\n");
-  root = rmjs_object_tree(root);
+  rmjs_object_tree(root);
 #endif
 
   display_nodes();

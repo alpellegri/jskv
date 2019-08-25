@@ -1,5 +1,6 @@
 echo build
-gcc -O0 -g -Isrc \
+if [ -f test.exe ]; then rm test.exe; fi
+gcc -O0 -g -Wall -Wextra -Isrc \
   src/util.c \
   src/input.c \
   src/token.c \

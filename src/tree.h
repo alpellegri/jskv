@@ -22,7 +22,8 @@ extern jsnode mkjs_native(jsnode_type type, string k, string v);
 extern jsnode mkjs_object(string k, jsnode v);
 extern jsnode cpjs(jsnode v);
 extern jsnode rmjs_object(jsnode n);
-extern jsnode rmjs_object_tree(jsnode n);
+extern void rmjs_object_tree(jsnode root);
+
 extern void jsscan(jsnode node);
 
 extern jsnode setjs(jsnode_type type, jsnode root, string path, string v);

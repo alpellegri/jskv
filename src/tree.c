@@ -44,10 +44,11 @@
 */
 
 jsnode mkjs_native(jsnode_type type, string k, string v) {
-  DEBUG_PRINT("> mkjs_native %s %s\n", k, v);
   jsnode node = checked_malloc(sizeof *node);
-  node->type = jsstring;
+  node->type = type;
   node->key = String(k);
+  assert((type == jsbool) || (type == jsint) || (type == jsfloat) || (type == jsstring));
+  // DEBUG_PRINT("> mkjs_native %s %s\n", k, v);
   node->value = String(v);
   node->child = NULL;
   node->next = NULL;
@@ -55,10 +56,10 @@ jsnode mkjs_native(jsnode_type type, string k, string v) {
 }
 
 jsnode mkjs_object(string k, jsnode v) {
-  DEBUG_PRINT("> mkjs_object %s\n", k);
   jsnode node = checked_malloc(sizeof *node);
   node->type = jsobject;
   node->key = String(k);
+  // DEBUG_PRINT("> mkjs_object %s\n", k);
   node->value = NULL;
   node->child = v;
   node->next = NULL;
@@ -72,13 +73,9 @@ jsnode cpjs(jsnode v) {
 
   // DEBUG_PRINT("> cpjs %d\n", level);
   if (v->value) {
-    assert((v->type == jsbool) || (v->type == jsint) || (v->type == jsfloat) ||
-           (v->type == jsstring));
+    assert((v->type == jsbool) || (v->type == jsint) || (v->type == jsfloat) || (v->type == jsstring));
     assert(v->child == NULL);
     root = mkjs_native(v->type, v->key, v->value);
-    if (v->next) {
-      root->next = cpjs(v->next);
-    }
   } else {
     assert(v->value == NULL);
     assert((v->type == jsarray) || (v->type == jsobject));
@@ -88,86 +85,57 @@ jsnode cpjs(jsnode v) {
       copy = cpjs(v->child);
     }
     root = mkjs_object(v->key, copy);
-    if (v->next) {
-      root->next = cpjs(v->next);
-    }
+  }
+  if (v->next) {
+    root->next = cpjs(v->next);
   }
 
   level--;
   return root;
 }
 
-jsnode rmjs_object_tree(jsnode root) {
+void rmjs_object_tree(jsnode root) {
   static uint8_t level;
   level++;
 
-  if (root != NULL) {
-    if (root->value != NULL) {
-      assert(root->child == NULL);
-      assert((root->type == jsbool) || (root->type == jsint) ||
-             (root->type == jsfloat) || (root->type == jsstring));
-      if (root->next != NULL) {
-        rmjs_object_tree(root->next);
-        root->next = NULL;
-      }
-      // DEBUG_PRINT("rmjs_object_tree %s\n", root->key);
-      checked_free(root->value);
-      checked_free(root->key);
-    } else {
-      assert((root->type == jsarray) || (root->type == jsobject));
-      if (root->next != NULL) {
-        rmjs_object_tree(root->next);
-        root->next = NULL;
-      }
-      if (root->child != NULL) {
-        rmjs_object_tree(root->child);
-        root->child = NULL;
-      }
-      // DEBUG_PRINT("rmjs_object_tree %s\n", root->key);
-      checked_free(root->key);
-    }
-    checked_free(root);
-  } else {
-    DEBUG_PRINT("rmjs_object empty\n", root);
+  // DEBUG_PRINT("> rmjs_object %d\n", level);
+  while (root != NULL) {
+    root = rmjs_object(root);
   }
 
   level--;
-  return NULL;
 }
 
 jsnode rmjs_object(jsnode root) {
   static uint8_t level;
   level++;
-  jsnode ret;
+  jsnode next = NULL;
 
   // DEBUG_PRINT("> rmjs_object %d\n", level);
   if (root != NULL) {
     // DEBUG_PRINT("rmjs_object %s\n", root->key);
-    ret = root->next;
     if (root->value != NULL) {
       assert(root->child == NULL);
       assert((root->type == jsbool) || (root->type == jsint) ||
              (root->type == jsfloat) || (root->type == jsstring));
       checked_free(root->value);
-      checked_free(root->key);
     } else {
       assert((root->type == jsarray) || (root->type == jsobject));
-      if (root->child != NULL) {
-        rmjs_object_tree(root->child);
-      }
-      checked_free(root->key);
+      assert(root->child != NULL);
+      rmjs_object_tree(root->child);
     }
+    checked_free(root->key);
+    next = root->next;
     checked_free(root);
   } else {
-    DEBUG_PRINT("rmjs_object empty\n", root);
+    DEBUG_PRINT("rmjs_object empty\n");
   }
 
   level--;
-  return ret;
+  return next;
 }
 
-string pathfind(jsnode root, string *path, jsnode *parent, jsnode *prev,
-                jsnode *node) {
+string pathfind(jsnode root, string *path, jsnode *parent, jsnode *prev, jsnode *node) {
   char *p;
   char *key = NULL;
   jsnode cursor = root;
@@ -213,7 +181,6 @@ string pathfind(jsnode root, string *path, jsnode *parent, jsnode *prev,
 jsnode setjs(jsnode_type type, jsnode root, string path, string v) {
   static uint8_t level;
   level++;
-  char *p;
   char *key = NULL;
   jsnode node;
   jsnode prev;
@@ -280,7 +247,6 @@ jsnode setjs_object(jsnode root, string path, jsnode v) {
   /*  */
   if (node != NULL) {
     // DEBUG_PRINT("setjs_object-root not empty %s\n", node->key);
-    jsnode next = node->next;
     jsnode copy = cpjs(v);
     jsnode _node = mkjs_object(key, copy);
     _node->next = node->next;
